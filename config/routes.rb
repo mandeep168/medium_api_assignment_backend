@@ -8,4 +8,8 @@ Rails.application.routes.draw do
   # get '/*a', to: 'application#not_found'
   get 'articles', to: 'articles#getarticles'
   post 'add/article', to: 'articles#create_article'
+  put 'edit/article/:id', to: 'articles#edit_article'
+  delete 'delete/article/:id', to: 'articles#delete_article'
+  get 'article/like/:id', to: 'articles#like_article'
+  post 'article/comment/:id', to: 'articles#comment_article'
 end
