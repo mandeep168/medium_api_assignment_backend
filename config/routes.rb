@@ -17,4 +17,14 @@ Rails.application.routes.draw do
   get 'myprofile', to: 'users#my_profile'
   get 'follow/:id', to: 'users#follow_user'
   get 'view/user/:id', to: 'users#view_user'
+  
+  post 'create/list/', to: 'list#create_list'
+  get 'list/add/:article_id/:list_id', to: 'list#add_article_to_list'
+  get 'list/view', to: 'list#view_all_lists'
+  get 'list/view/:id', to: 'list#view_list'
+
+
+  get 'saveforlater/:id', to: 'save_for_later#mark'
+  get 'saveforlater', to: 'save_for_later#view'
+
 end

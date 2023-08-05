@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_05_022643) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_05_054926) do
   create_table "articles", force: :cascade do |t|
     t.string "title"
     t.text "content"
@@ -51,6 +51,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_05_022643) do
     t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
+  create_table "lists", force: :cascade do |t|
+    t.string "name"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_lists_on_user_id"
+  end
+
   create_table "profiles", force: :cascade do |t|
     t.string "name"
     t.text "bio"
@@ -60,10 +68,28 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_05_022643) do
     t.index ["user_id"], name: "profile_user_index_user_id"
   end
 
+  create_table "saveforlaters", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "article_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["article_id"], name: "index_saveforlaters_on_article_id"
+    t.index ["user_id"], name: "index_saveforlaters_on_user_id"
+  end
+
   create_table "topics", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "userlists", force: :cascade do |t|
+    t.integer "list_id"
+    t.integer "article_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["article_id"], name: "index_userlists_on_article_id"
+    t.index ["list_id"], name: "index_userlists_on_list_id"
   end
 
   create_table "users", force: :cascade do |t|

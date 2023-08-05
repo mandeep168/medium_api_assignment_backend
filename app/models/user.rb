@@ -11,6 +11,8 @@ class User < ApplicationRecord
     has_many :comments, class_name: 'Comment', dependent: :destroy
     has_many :views, class_name: 'View', dependent: :destroy
     has_one :profile, dependent: :destroy
+    has_many :lists, foreign_key: :user_id, class_name: 'List', dependent: :destroy
+    has_many :saveforlaters, class_name: 'Saveforlater', dependent: :destroy
 
     has_many :follows
 
