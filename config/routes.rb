@@ -15,4 +15,6 @@ Rails.application.routes.draw do
   get 'article/view/:id', to: 'articles#view_article'
   get 'myposts', to: 'articles#get_my_articles'
   get 'myprofile', to: 'users#my_profile'
+  get 'follow/:id', to: 'users#follow_user'
+  get 'view/user/:id', to: 'users#view_user'
 end

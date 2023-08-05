@@ -1,17 +1,51 @@
 class UsersController < ApplicationController
     before_action :authorize_request, except: :create
-  before_action :find_user, except: %i[create index, my_profile]
+  before_action :find_user, except: %i[create index my_profile show_profile view_user follow_user]
 
   # GET /myprofile
-  def my_profile
+  def show_profile (userToShow)
     profile = {
-      "email": @current_user.email,
-      "joined_on": @current_user.created_at.strftime('%d/%m/%Y'),
-      "name": @current_user.profile.name,
-      "bio": @current_user.profile.bio
+      "email": userToShow.email,
+      "joined_on": userToShow.created_at.strftime('%d/%m/%Y'),
+      "name": userToShow.profile.name,
+      "bio": userToShow.profile.bio
     }
-    render json: profile
   end
+  def my_profile
+    # profile = {
+    #   "email": @current_user.email,
+    #   "joined_on": @current_user.created_at.strftime('%d/%m/%Y'),
+    #   "name": @current_user.profile.name,
+    #   "bio": @current_user.profile.bio
+    # }
+    # render json: profile
+    render json: show_profile(@current_user)
+  end
+
+  def view_user
+    render json: show_profile(User.find_by(params[:id]))
+  end
+
+  def follow_user
+    follow = Follow.where(follower_id: @current_user.id, following_id: params[:id])
+    if follow.length == 0
+      follow = Follow.new();
+      follow.follower_id = @current_user.id;
+      follow.following_id = params[:id]
+      follow.save
+      response = {
+        message: "User followed successfully",
+        data: follow
+      }
+    else 
+      follow.first.destroy
+      response = {
+        message: "User unfollowed successfully"
+      }
+    end
+    render json: response
+  end
+
 
   # GET /users
   def index

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_05_012009) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_05_022643) do
   create_table "articles", force: :cascade do |t|
     t.string "title"
     t.text "content"
@@ -30,6 +30,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_05_012009) do
     t.text "content"
     t.index ["article_id"], name: "index_comments_on_article_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "follows", force: :cascade do |t|
+    t.integer "follower_id", null: false
+    t.integer "following_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["follower_id", "following_id"], name: "index_follows_on_follower_id_and_following_id", unique: true
+    t.index ["follower_id"], name: "index_follows_on_follower_id"
+    t.index ["following_id"], name: "index_follows_on_following_id"
   end
 
   create_table "likes", force: :cascade do |t|
@@ -74,6 +84,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_05_012009) do
 
   add_foreign_key "comments", "articles"
   add_foreign_key "comments", "users"
+  add_foreign_key "follows", "users", column: "follower_id"
+  add_foreign_key "follows", "users", column: "following_id"
   add_foreign_key "likes", "articles"
   add_foreign_key "likes", "users"
   add_foreign_key "views", "articles"
