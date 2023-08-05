@@ -27,4 +27,13 @@ Rails.application.routes.draw do
   get 'saveforlater/:id', to: 'save_for_later#mark_and_unmark'
   get 'saveforlater', to: 'save_for_later#view'
 
+  get 'topics/view', to: 'topic#view_topics'
+
+  get 'filter/author/:id', to: 'articles#filter_by_user'
+  get 'filter/date/:start_date/:end_date', to: 'articles#filter_by_date'
+  post 'search', to: 'articles#search'
+  get 'sort/likes', to: 'articles#sort_by_likes_count'
+  get 'sort/comments', to: 'articles#sort_by_comments_count'
+
+
 end

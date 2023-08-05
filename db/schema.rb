@@ -10,14 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_05_054926) do
-  create_table "articles", force: :cascade do |t|
+ActiveRecord::Schema[7.0].define(version: 2023_08_05_092333) do
+  create_table "Articles", force: :cascade do |t|
     t.string "title"
     t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.integer "topic_id"
+    t.string "estimatedtime"
     t.index ["topic_id"], name: "post_topic_index_user_id"
     t.index ["user_id"], name: "index_user_id"
   end
