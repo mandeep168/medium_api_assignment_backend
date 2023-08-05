@@ -15,6 +15,17 @@ class ArticlesController < ApplicationController
         render json: like
     end
 
+    def view_article 
+        view = View.where(article_id: params[:id], user_id: @current_user.id)
+        if view[0].nil? 
+            view = View.new
+            view.user_id = @current_user.id
+            view.article_id = params[:id]
+            view.save
+        end
+        render json: view
+    end
+
     def comment_article 
         comment = Like.where(article_id: params[:id], user_id: @current_user.id)
         if comment[0].nil? 
@@ -70,7 +81,21 @@ class ArticlesController < ApplicationController
         else 
             render json: {error: post.error.full_messages}, status: :unprocessable_entity
         end
+    end
 
+    def get_my_articles
+        my_posts = []
+        for article in @current_user.articles 
+            # article => post, likes_count, comment_count, views_array 
+            article_obj = {
+                'article': article,
+                'likes_count': article.likes.count,
+                'comments_count': article.comments.count,
+                'views': View.where(article_id: article.id)
+            }
+            my_posts << article_obj
+        end
+        render json: my_posts
     end
 
     def article_params

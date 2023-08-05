@@ -12,4 +12,7 @@ Rails.application.routes.draw do
   delete 'delete/article/:id', to: 'articles#delete_article'
   get 'article/like/:id', to: 'articles#like_article'
   post 'article/comment/:id', to: 'articles#comment_article'
+  get 'article/view/:id', to: 'articles#view_article'
+  get 'myposts', to: 'articles#get_my_articles'
+  get 'myprofile', to: 'users#my_profile'
 end

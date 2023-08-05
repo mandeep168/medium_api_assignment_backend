@@ -1,6 +1,17 @@
 class UsersController < ApplicationController
     before_action :authorize_request, except: :create
-  before_action :find_user, except: %i[create index]
+  before_action :find_user, except: %i[create index, my_profile]
+
+  # GET /myprofile
+  def my_profile
+    profile = {
+      "email": @current_user.email,
+      "joined_on": @current_user.created_at.strftime('%d/%m/%Y'),
+      "name": @current_user.profile.name,
+      "bio": @current_user.profile.bio
+    }
+    render json: profile
+  end
 
   # GET /users
   def index
