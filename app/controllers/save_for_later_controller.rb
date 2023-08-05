@@ -1,7 +1,8 @@
 class SaveForLaterController < ApplicationController
     before_action :authorize_request
 
-    def mark
+    # method for adding or deleting articles to saved for later section
+    def mark_and_unmark
         saveforlater = Saveforlater.where(user_id: @current_user.id, article_id: params[:id])
         if saveforlater.empty?
             saveforlater = Saveforlater.new()
@@ -13,13 +14,15 @@ class SaveForLaterController < ApplicationController
                 message = "Error occured while save the article for later"
             end
         else 
-            message = "This has already been saved for later"
+            saveforlater.first.destroy
+            message = "Article removed from save for later"
         end
         render json: {
             message: message
         }
     end
 
+    # method for viewing articles in saved for later section
     def view
         articles = []
         for item in Saveforlater.where(user_id: @current_user)

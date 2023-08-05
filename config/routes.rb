@@ -24,7 +24,7 @@ Rails.application.routes.draw do
   get 'list/view/:id', to: 'list#view_list'
 
 
-  get 'saveforlater/:id', to: 'save_for_later#mark'
+  get 'saveforlater/:id', to: 'save_for_later#mark_and_unmark'
   get 'saveforlater', to: 'save_for_later#view'
 
 end
