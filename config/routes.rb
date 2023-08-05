@@ -42,4 +42,6 @@ Rails.application.routes.draw do
   get 'sort/comments', to: 'articles#sort_by_comments_count'
 
 
+  post 'save/draft', to: 'drafts#save_or_update_draft'
+  get 'draft', to: 'drafts#get_draft'
 end

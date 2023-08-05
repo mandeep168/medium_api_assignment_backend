@@ -1,5 +1,24 @@
 class ArticlesController < ApplicationController
     before_action :authorize_request, except: %i[getarticles estimate_reading_time]
+    before_action :post_exists_check, only: [:comment_article, :delete_article]
+    before_action :user_authorized_to_perform_action_check, only: [:delete_article, :edit_article]
+
+    def user_authorized_to_perform_action_check
+        unless Post.find(params[:id]).user_id == @current_user.id 
+            render json: response = {
+                message: "You are not authorized to perform the action"
+            }
+        end
+    end
+
+    def post_exists_check 
+        unless Article.exists?(id: params[:id])
+            render json: response = {
+                message: "Post does not exist"
+            }
+        end
+    end
+
     def getarticles 
         render json: Article.all
     end
@@ -26,15 +45,28 @@ class ArticlesController < ApplicationController
         render json: view
     end
 
-    def comment_article 
-        comment = Like.where(article_id: params[:id], user_id: @current_user.id)
-        if comment[0].nil? 
-            comment = Like.new(params[:content])
+    def comment_article
+        comment = Comment.where(article_id: params[:id], user_id: @current_user.id)
+        if comment.empty? 
+            comment = Comment.new()
+            comment.content = params[:content]
             comment.user_id = @current_user.id
-            comment.article_id = params[:id]
+            comment.article_id = params[:id].to_i
             comment.save
+            response = {
+                message: "Comment created",
+                date: comment
+            }
+        else 
+            comment = comment.first
+            comment.content = params[:content]
+            comment.save
+            response = {
+                message: "Comment Updated",
+                data: comment
+            }
         end
-        render json: comment
+        render json: response
     end
 
     def create_article
@@ -75,7 +107,9 @@ class ArticlesController < ApplicationController
 
     def delete_article
         post = @current_user.articles.find(params[:id])
-        if post.destroy
+
+        if post.views.delete_all && post.comments.delete_all && post.likes.delete_all && post.saveforlaters.delete_all && post.userlists.delete_all
+            post.destroy
             render json: {message: "post deleted successfully"}, status: :ok
         else 
             render json: {error: post.error.full_messages}, status: :unprocessable_entity
