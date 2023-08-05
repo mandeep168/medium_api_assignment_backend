@@ -1,10 +1,10 @@
 class ArticlesController < ApplicationController
     before_action :authorize_request, except: %i[getarticles estimate_reading_time]
-    before_action :post_exists_check, only: [:comment_article, :delete_article]
+    before_action :post_exists_check, only: [:comment_article, :delete_article, :edit_article]
     before_action :user_authorized_to_perform_action_check, only: [:delete_article, :edit_article]
 
     def user_authorized_to_perform_action_check
-        unless Post.find(params[:id]).user_id == @current_user.id 
+        unless Article.find(params[:id]).user_id == @current_user.id 
             render json: response = {
                 message: "You are not authorized to perform the action"
             }
@@ -70,9 +70,9 @@ class ArticlesController < ApplicationController
     end
 
     def create_article
-        @article = Article.new(article_params) # to do -> can we include topic in it
-        topic = Topic.find_by(name: params[:name])
-        if topic.nil?
+        @article = Article.new(article_params) 
+        topic = Topic.where(name: params[:name])
+        if topic.empty?
             topic = Topic.new()
             topic.name = params[:topic_name]
             topic.save
