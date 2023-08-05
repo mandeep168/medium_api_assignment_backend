@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_05_092333) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_05_103146) do
   create_table "Articles", force: :cascade do |t|
     t.string "title"
     t.text "content"
@@ -31,6 +31,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_05_092333) do
     t.text "content"
     t.index ["article_id"], name: "index_comments_on_article_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "customers", force: :cascade do |t|
+    t.string "email"
+    t.string "stripe_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "follows", force: :cascade do |t|
@@ -58,6 +65,23 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_05_092333) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_lists_on_user_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.integer "amount_cents"
+    t.integer "payment_method"
+    t.integer "customer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_orders_on_customer_id"
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.integer "order_id", null: false
+    t.string "stripe_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_payments_on_order_id"
   end
 
   create_table "profiles", force: :cascade do |t|
@@ -115,6 +139,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_05_092333) do
   add_foreign_key "follows", "users", column: "following_id"
   add_foreign_key "likes", "articles"
   add_foreign_key "likes", "users"
+  add_foreign_key "orders", "customers"
+  add_foreign_key "payments", "orders"
   add_foreign_key "views", "articles"
   add_foreign_key "views", "users"
 end
