@@ -6,4 +6,5 @@ class Article < ApplicationRecord
     has_many :comments, class_name: 'Comment', dependent: :destroy
     has_many :userlists, class_name: 'Userlist', dependent: :destroy
     has_many :saveforlaters, class_name: 'Saveforlater', dependent: :destroy
+    has_one_attached :image
 end

@@ -4,21 +4,19 @@ class UsersController < ApplicationController
 
   # GET /myprofile
   def show_profile (userToShow)
+    ActiveStorage::Current.host = "http://localhost:3000"
     profile = {
+      "name": userToShow.profile.name, 
+      "avatar": userToShow.profile.avatar.url,
+      "bio": userToShow.profile.bio,
       "email": userToShow.email,
-      "joined_on": userToShow.created_at.strftime('%d/%m/%Y'),
-      "name": userToShow.profile.name,
-      "bio": userToShow.profile.bio
+      "followers": userToShow.followers,
+      "following": userToShow.following,
+      "joined_on": userToShow.created_at.strftime('%d/%m/%Y')
     }
   end
+
   def my_profile
-    # profile = {
-    #   "email": @current_user.email,
-    #   "joined_on": @current_user.created_at.strftime('%d/%m/%Y'),
-    #   "name": @current_user.profile.name,
-    #   "bio": @current_user.profile.bio
-    # }
-    # render json: profile
     render json: show_profile(@current_user)
   end
 
@@ -63,9 +61,12 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
         @profile = Profile.new(profile_params)
-        puts @user.id
+        @profile.avatar.attach(params[:avatar]) if params[:avatar].present?
         @profile.user_id = @user.id
         @profile.save
+        
+        ActiveStorage::Current.host = "http://localhost:3000"
+        puts @profile.avatar.url
       render json: @profile, status: :created
     else
       render json: { errors: @user.errors.full_messages },
