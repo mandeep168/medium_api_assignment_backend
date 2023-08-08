@@ -189,3 +189,4 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_06_074136) do
   add_foreign_key "views", "articles"
   add_foreign_key "views", "users"
 end
+
